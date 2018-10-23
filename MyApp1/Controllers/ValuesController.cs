@@ -28,29 +28,59 @@ namespace MyApp1.Controllers
         }
 
         // GET api/values/5
-        public UserDetails Get(int id)
+        public UserDetails Get([FromUri]int id)
         {
-            return null;
+            UserDetails u = new UserDetails();
+
+            try
+            {
+                
+
+
+                using (var context = new MyDbContext())
+                {
+                    u = (from n in context.UserDetails where n.UserId1 == id select n).Single();
+
+                }
+
+
+
+                return u;
+            }
+
+            catch(Exception e)
+            {
+              //  u.Name = "empty";
+                return u;
+            }
+          
         }
+
+
+
+        
+
+
 
         // POST api/values
         public HttpResponseMessage Post([FromBody]UserDetails user)
         {
-            try
-            {
-                using (var context = new MyDbContext())
-                {
-                    context.UserDetails.Add(user);
-                    context.SaveChanges();
-                }
-                var message = Request.CreateResponse(HttpStatusCode.Created, user);
-                return message;
-            }
-            catch (Exception e)
-            {
-                return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
-            }
-        }
+             try
+              {
+                  using (var context = new MyDbContext())
+                  {
+                      context.UserDetails.Add(user);
+                      context.SaveChanges();
+                  }
+                  var message = Request.CreateResponse(HttpStatusCode.Created, user);
+                  return message;
+              }
+              catch (Exception e)
+              {
+                  return Request.CreateErrorResponse(HttpStatusCode.BadRequest, e);
+              }
+          }
+
 
         // PUT api/values/5
         public HttpResponseMessage Put([FromBody]UserDetails user)
@@ -66,11 +96,13 @@ namespace MyApp1.Controllers
 
                     foreach (UserDetails u in update)
                     {
+                        u.UserId1 = user.UserId1;
                         u.Name = user.Name;
                         u.Age = user.Age;
                         u.UserAdress = user.UserAdress;
                         u.UserPassword = user.UserPassword;
                         u.UserMobile = user.UserMobile;
+                        u.UserEmail = user.UserEmail;
 
                     }
 
